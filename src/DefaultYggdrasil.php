@@ -129,7 +129,10 @@ class DefaultYggdrasil implements Yggdrasil {
 
     function validate()
     {
-        // TODO: Implement validate() method.
+        if($this->accessToken == null)
+            throw new InvalidParameterException('Access token has not been set, cannot validate.');
+
+        $this->getResponse('/validate', ['accessToken' => $this->accessToken]);
     }
 
     function signout($password)
