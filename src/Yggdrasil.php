@@ -45,16 +45,16 @@ interface Yggdrasil {
      * @param $password String the password to match the username
      * @throws InvalidParameterException if the username isn't set or $password is null
      * @throws APIRequestException if the server returned errors for the request
-     * @return mixed TODO
      */
     function authenticate($password, $agent = 'Minecraft');
 
     /**
      * Refresh the access token. Can be used to verify an access token is correct
      *
-     * @throws InvalidParameterException TODO condition
+     * Sets the accessToken and clientToken values on success.
+     *
+     * @throws InvalidParameterException if clientToken or accessToken are not set
      * @throws APIRequestException if the server returned errors for the request
-     * @return mixed TODO
      */
     function refresh();
 

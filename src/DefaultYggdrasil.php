@@ -88,9 +88,9 @@ class DefaultYggdrasil implements Yggdrasil {
     function authenticate($password, $agent = 'Minecraft')
     {
         if($this->username == null)
-            throw new InvalidParameterException('Username field has not been set, use setUsername (or the constructor) to set it before trying to authenticate.');
+            throw new InvalidParameterException('Username has not been set, cannot authenticate');
         if($password == null)
-            throw new InvalidParameterException('Cannot authenticate with a null password.');
+            throw new InvalidParameterException('Password cannot be null when authenticating');
 
         $payload = [
             'agent' => [
@@ -113,7 +113,18 @@ class DefaultYggdrasil implements Yggdrasil {
 
     function refresh()
     {
-        // TODO: Implement refresh() method.
+        if ($this->clientToken == null)
+            throw new InvalidParameterException('Client token has not been set, cannot refresh.');
+        if ($this->accessToken == null)
+            throw new InvalidParameterException('Access token has not been set, cannot refresh.');
+
+        $response = $this->getResponse('/refresh', [
+            'accessToken' => $this->accessToken,
+            'clientToken' => $this->clientToken
+        ]);
+
+        $this->accessToken = $response['accessToken'];
+        $this->clientToken = $response['clientToken'];
     }
 
     function validate()
