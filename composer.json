@@ -10,7 +10,6 @@
         }
     ],
     "require": {
-        "phpseclib/phpseclib": "0.3.6",
         "guzzlehttp/guzzle": "4.*"
     },
     "autoload": {
