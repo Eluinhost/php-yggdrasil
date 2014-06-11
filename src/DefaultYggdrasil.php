@@ -69,9 +69,48 @@ class DefaultYggdrasil implements Yggdrasil {
         return $this->username;
     }
 
-    function authenticate($password)
+    function authenticate($password, $agent = 'Minecraft')
     {
-        // TODO: Implement authenticate() method.
+        $payload = [
+            'agent' => [
+                'name'      => $agent,
+                'version'   => 1
+            ],
+            'username' => $this->username,
+            'password' => $password
+        ];
+
+        if($this->clientToken != null) {
+            $payload['client_token'] = $this->clientToken;
+        }
+
+        $response = $this->getResponse('/authenticate', $payload);
+
+        //TODO read the clientToken/accessToken back from the response
+
+        /*
+         Response Format:
+        {
+            "accessToken": "random access token",  // hexadecimal
+            "clientToken": "client identifier",    // identical to the one received
+            "availableProfiles": [                 // only present if the agent field was received
+                {
+                    "id": "profile identifier",        // hexadecimal
+                    "name": "player name",
+                    "legacy": true or false          // In practice, this field only appears in the response if true.  Default to false.
+                }
+            ],
+            "selectedProfile": {                   // only present if the agent field was received
+                "id": "profile identifier",
+                "name": "player name",
+                "legacy": true or false
+            }
+        }
+
+        Note: If a user wishes to stay logged in on his computer you are strongly advised to store the received accessToken instead of the password itself.
+        Currently each account will only have one single profile, multiple profiles per account are however planned in the future. If a user attempts to log into a valid Mojang account with no attached Minecraft license, the authentication will be successful, but the response will not contain a "selectedProfile" field, and the "availableProfiles" array will be empty.
+        Some instances in the wild have been observed of Mojang returning a flat "null" for failed refresh attempts against legacy accounts. It's not clear what the actual error tied to the null response is and it is extremely rare, but implementations should be wary of null output from the response.
+         */
     }
 
     function refresh()
