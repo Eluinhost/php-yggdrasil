@@ -137,7 +137,15 @@ class DefaultYggdrasil implements Yggdrasil {
 
     function signout($password)
     {
-        // TODO: Implement signout() method.
+        if($this->username == null)
+            throw new InvalidParameterException('Username has not been set, cannot authenticate');
+        if($password == null)
+            throw new InvalidParameterException('Password cannot be null when authenticating');
+
+        $this->getResponse('/signout', [
+            'username' => $this->username,
+            'password' => $password
+        ]);
     }
 
     function invalidate()

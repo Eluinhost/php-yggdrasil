@@ -77,7 +77,6 @@ interface Yggdrasil {
      * @param $password String the user's password
      * @throws InvalidParameterException if the username isn't set or $password is null
      * @throws APIRequestException if the server returned errors for the request
-     * @return mixed TODO
      */
     function signout($password);
 
