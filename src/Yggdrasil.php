@@ -32,10 +32,12 @@ interface Yggdrasil {
 
     /**
      * Gets an access token from the server, can be fetched with getAccessToken
+     *
+     * @param $agent String the game to authenticate with. Currently 'Minecraft' or 'Scrolls'. Defaults to 'Minecraft'
      * @param $password String the password to match the username
      * @return mixed TODO
      */
-    function authenticate($password);
+    function authenticate($password, $agent = 'Minecraft');
 
     /**
      * Refresh the access token. Can be used to verify an access token is correct
