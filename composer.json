@@ -10,7 +10,8 @@
         }
     ],
     "require": {
-        "phpseclib/phpseclib": "0.3.6"
+        "phpseclib/phpseclib": "0.3.6",
+        "guzzlehttp/guzzle": "4.*"
     },
     "autoload": {
         "psr-4": {"PublicUHC\\PhpYggdrasil\\": "src/"}
