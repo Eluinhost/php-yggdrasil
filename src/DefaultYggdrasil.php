@@ -15,11 +15,15 @@ class DefaultYggdrasil implements Yggdrasil {
     private $accessToken;
     private $httpClient;
 
-    public function __construct($username, $clientToken = null, $accessToken = null)
+    /**
+     * Create a new Yggdrasil for querying mojang servers
+     *
+     * @param null|String $username (optional) The email address (or username of legacy accounts) of the user
+     * @param null|String $clientToken (optional) The assosciated client token
+     * @param null|String $accessToken (optinal) The associated access token
+     */
+    public function __construct($username = null, $clientToken = null, $accessToken = null)
     {
-        $this->username = $username;
-        $this->clientToken = $clientToken;
-        $this->accessToken = $accessToken;
         $this->httpClient = new Client();
     }
 
