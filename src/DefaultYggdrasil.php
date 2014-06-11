@@ -20,7 +20,7 @@ class DefaultYggdrasil implements Yggdrasil {
      *
      * @param null|String $username (optional) The email address (or username of legacy accounts) of the user
      * @param null|String $clientToken (optional) The assosciated client token
-     * @param null|String $accessToken (optinal) The associated access token
+     * @param null|String $accessToken (optional) The associated access token
      */
     public function __construct($username = null, $clientToken = null, $accessToken = null)
     {
@@ -75,6 +75,11 @@ class DefaultYggdrasil implements Yggdrasil {
 
     function authenticate($password, $agent = 'Minecraft')
     {
+        if($this->username == null)
+            throw new InvalidParameterException('Username field has not been set, use setUsername (or the constructor) to set it before trying to authenticate.');
+        if($password == null)
+            throw new InvalidParameterException('Cannot authenticate with a null password.');
+
         $payload = [
             'agent' => [
                 'name'      => $agent,
