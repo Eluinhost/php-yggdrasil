@@ -32,7 +32,7 @@ class DefaultYggdrasil implements Yggdrasil {
      * @param $subURL String the sub url to add onto AUTH_SERVER_URL
      * @param $jsonData array the json payload
      * @throws APIRequestException if a non 200 code with the error details from the server
-     * @return ResponseInterface the returned response
+     * @return array json response
      */
     private function getResponse($subURL, $jsonData) {
         $response =  $this->httpClient->post(
@@ -55,7 +55,7 @@ class DefaultYggdrasil implements Yggdrasil {
                 $cause == null ? '' : $cause
             );
         }
-        return $response;
+        return $response->json();
     }
 
     public function getClientToken()
