@@ -31,7 +31,13 @@ interface Yggdrasil {
     function getUsername();
 
     /**
-     * Gets an access token from the server, can be fetched with getAccessToken
+     * Gets an access token from the server, can be fetched with getAccessToken.
+     *
+     * <p>If clientToken is set it will be passed along with the authenticate function</p>
+     * <p>
+     * If it is not set the server will generate a random token based on Java's UUID.toString()
+     * This will however also invalidate all previously acquired accessTokens for this user across all clients.
+     * </p>
      *
      * @param $agent String the game to authenticate with. Currently 'Minecraft' or 'Scrolls'. Defaults to 'Minecraft'
      * @param $password String the password to match the username
