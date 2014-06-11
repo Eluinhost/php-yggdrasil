@@ -8,5 +8,11 @@
             "name": "Graham Howden",
             "email": "graham_howden1@yahoo.co.uk"
         }
-    ]
+    ],
+    "require": {
+        "phpseclib/phpseclib": "0.3.6"
+    },
+    "autoload": {
+        "psr-4": {"PublicUHC\\PhpYggdrasil\\": "src/"}
+    }
 }
