@@ -3,7 +3,6 @@ namespace PublicUHC\PhpYggdrasil;
 
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Message\Request;
 use GuzzleHttp\Message\ResponseInterface;
 
 class DefaultYggdrasil implements Yggdrasil {
@@ -32,10 +31,11 @@ class DefaultYggdrasil implements Yggdrasil {
      *
      * @param $subURL String the sub url to add onto AUTH_SERVER_URL
      * @param $jsonData array the json payload
+     * @throws APIRequestException if a non 200 code with the error details from the server
      * @return ResponseInterface the returned response
      */
     private function getResponse($subURL, $jsonData) {
-        return $this->httpClient->post(
+        $response =  $this->httpClient->post(
             self::AUTH_SERVER_URL . $subURL,
             [
                 'json'      => $jsonData,
@@ -44,6 +44,18 @@ class DefaultYggdrasil implements Yggdrasil {
                 ]
             ]
         );
+        if( $response->getStatusCode() != 200 ) {
+            $json = $response->json();
+            $short = $json['error'];
+            $error = $json['errorMessage'];
+            $cause = $json['cause'];
+            throw new APIRequestException(
+                $short == null ? 'Unknown Error' : $short,
+                $error == null ? 'Unknown Error' : $error,
+                $cause == null ? '' : $cause
+            );
+        }
+        return $response;
     }
 
     public function getClientToken()
