@@ -138,9 +138,9 @@ class DefaultYggdrasil implements Yggdrasil {
     function signout($password)
     {
         if($this->username == null)
-            throw new InvalidParameterException('Username has not been set, cannot authenticate');
+            throw new InvalidParameterException('Username has not been set, cannot signout');
         if($password == null)
-            throw new InvalidParameterException('Password cannot be null when authenticating');
+            throw new InvalidParameterException('Password cannot be null when signout');
 
         $this->getResponse('/signout', [
             'username' => $this->username,
@@ -150,6 +150,14 @@ class DefaultYggdrasil implements Yggdrasil {
 
     function invalidate()
     {
-        // TODO: Implement invalidate() method.
+        if ($this->clientToken == null)
+            throw new InvalidParameterException('Client token has not been set, cannot invalidate.');
+        if ($this->accessToken == null)
+            throw new InvalidParameterException('Access token has not been set, cannot invalidate.');
+
+        $this->getResponse('/invalidate', [
+            'clientToken' => $this->clientToken,
+            'accessToken' => $this->accessToken
+        ]);
     }
 }

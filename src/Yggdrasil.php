@@ -83,9 +83,8 @@ interface Yggdrasil {
     /**
      * Invalidates the client/access token pair
      *
-     * @throws InvalidParameterException TODO condition
+     * @throws InvalidParameterException if clientToken or accessToken are not set
      * @throws APIRequestException if the server returned errors for the request
-     * @return mixed TODO
      */
     function invalidate();
 } 
