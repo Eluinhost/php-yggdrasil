@@ -39,6 +39,8 @@ interface Yggdrasil {
      * This will however also invalidate all previously acquired accessTokens for this user across all clients.
      * </p>
      *
+     * Sets the accessToken and clientToken values on success.
+     *
      * @param $agent String the game to authenticate with. Currently 'Minecraft' or 'Scrolls'. Defaults to 'Minecraft'
      * @param $password String the password to match the username
      * @throws InvalidParameterException if the username isn't set or $password is null
