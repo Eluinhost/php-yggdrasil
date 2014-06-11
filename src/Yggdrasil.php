@@ -42,6 +42,7 @@ interface Yggdrasil {
      * @param $agent String the game to authenticate with. Currently 'Minecraft' or 'Scrolls'. Defaults to 'Minecraft'
      * @param $password String the password to match the username
      * @throws InvalidParameterException if the username isn't set or $password is null
+     * @throws APIRequestException if the server returned errors for the request
      * @return mixed TODO
      */
     function authenticate($password, $agent = 'Minecraft');
@@ -50,6 +51,7 @@ interface Yggdrasil {
      * Refresh the access token. Can be used to verify an access token is correct
      *
      * @throws InvalidParameterException TODO condition
+     * @throws APIRequestException if the server returned errors for the request
      * @return mixed TODO
      */
     function refresh();
@@ -67,6 +69,7 @@ interface Yggdrasil {
      *
      * @param $password String the user's password
      * @throws InvalidParameterException if the username isn't set or $password is null
+     * @throws APIRequestException if the server returned errors for the request
      * @return mixed TODO
      */
     function signout($password);
@@ -75,6 +78,7 @@ interface Yggdrasil {
      * Invalidates the client/access token pair
      *
      * @throws InvalidParameterException TODO condition
+     * @throws APIRequestException if the server returned errors for the request
      * @return mixed TODO
      */
     function invalidate();
