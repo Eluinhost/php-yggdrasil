@@ -1,0 +1,12 @@
+{
+    "name": "Eluinhost/php-yggdrasil",
+    "description": "PHP Library for interacting with Mojang authentication servers",
+    "minimum-stability": "stable",
+    "license": "GPLv3",
+    "authors": [
+        {
+            "name": "Graham Howden",
+            "email": "graham_howden1@yahoo.co.uk"
+        }
+    ]
+}
