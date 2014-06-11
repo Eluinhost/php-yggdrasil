@@ -3,6 +3,18 @@ php-yggdrasil
 
 PHP Library for interacting with Mojang authentication servers.
 
+Installation
+------------
+
+Using composer add it to your requirements section:
+
+    {
+        "require-dev": {
+            "publicuhc/php-yggdrasil": "dev-master"
+        }
+    }
+    
+
 Usage
 -----
 
