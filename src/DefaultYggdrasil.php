@@ -3,7 +3,6 @@ namespace PublicUHC\PhpYggdrasil;
 
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Message\ResponseInterface;
 
 class DefaultYggdrasil implements Yggdrasil {
 
