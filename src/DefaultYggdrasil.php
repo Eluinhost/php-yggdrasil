@@ -217,8 +217,6 @@ class DefaultYggdrasil implements Yggdrasil {
                     $texturesJSON['isPublic']
                 );
 
-                var_dump($texturesJSON['textures']);
-
                 if(array_key_exists('skin', $texturesJSON['textures'])) {
                     $properties->setSkinTexture($texturesJSON['textures']['skin']['url']);
                 }
