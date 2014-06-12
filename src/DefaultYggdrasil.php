@@ -7,7 +7,7 @@ use GuzzleHttp\Client;
 class DefaultYggdrasil implements Yggdrasil {
 
     const AUTH_SERVER_URL = 'https://authserver.mojang.com';
-    const SESSION_SERVER = 'https://sessionserver.mojang.com/session/minecraft/profile';
+    const SESSION_SERVER = 'https://sessionserver.mojang.com/session/minecraft';
 
     private $username;
     private $clientToken;
@@ -24,6 +24,38 @@ class DefaultYggdrasil implements Yggdrasil {
     public function __construct($username = null, $clientToken = null, $accessToken = null)
     {
         $this->httpClient = new Client();
+    }
+
+    /**
+     * Checks the array for a properties with name 'textures' and creates a PlayerProperties for it
+     *
+     * @param $propertiesArray array the array of properties
+     * @return PlayerProperties the parsed properties or null if textures property not found
+     */
+    private function parseTexturesProperties($propertiesArray)
+    {
+        foreach($propertiesArray as $property) {
+            if($property['name'] == 'textures') {
+                $texturesJSON = json_decode(base64_decode($property['value']), true);
+
+                $properties = new PlayerProperties(
+                    $texturesJSON['timestamp'],
+                    $texturesJSON['profileId'],
+                    $texturesJSON['profileName'],
+                    $texturesJSON['isPublic']
+                );
+
+                if(array_key_exists('SKIN', $texturesJSON['textures'])) {
+                    $properties->setSkinTexture($texturesJSON['textures']['SKIN']['url']);
+                }
+                if(array_key_exists('CAPE', $texturesJSON['textures'])) {
+                    $properties->setCapeTexture($texturesJSON['textures']['CAPE']['url']);
+                }
+
+                return $properties;
+            }
+        }
+        return null;
     }
 
     /**
@@ -52,14 +84,17 @@ class DefaultYggdrasil implements Yggdrasil {
      * Shortcut to getResponse using self::SESSION_SERVER_URL as a base
      *
      * @param $subURL String the url to append to SESSION_SERVER_URL
+     * @param $queryParameters array an assoc array of the get parameters to set
      * @throws APIRequestException if a non 200 code with the error details from the server
      * @return array json response
      */
-    private function getSessionServerResponse($subURL)
+    private function getSessionServerResponse($subURL, $queryParameters = [])
     {
         return $this->getResponse(
             self::SESSION_SERVER . $subURL,
-            [],
+            [
+                'query' => $queryParameters
+            ],
             false
         );
     }
@@ -202,29 +237,9 @@ class DefaultYggdrasil implements Yggdrasil {
         if ($uuid == null)
             throw new InvalidParameterException('Cannot fetch info for a null uuid');
 
-        $response = $this->getSessionServerResponse("/$uuid");
+        $response = $this->getSessionServerResponse("/profile/$uuid");
 
-        $properties = null;
-
-        foreach($response['properties'] as $property) {
-            if($property['name'] == 'textures') {
-                $texturesJSON = json_decode(base64_decode($property['value']), true);
-
-                $properties = new PlayerProperties(
-                    $texturesJSON['timestamp'],
-                    $texturesJSON['profileId'],
-                    $texturesJSON['profileName'],
-                    $texturesJSON['isPublic']
-                );
-
-                if(array_key_exists('SKIN', $texturesJSON['textures'])) {
-                    $properties->setSkinTexture($texturesJSON['textures']['SKIN']['url']);
-                }
-                if(array_key_exists('CAPE', $texturesJSON['textures'])) {
-                    $properties->setCapeTexture($texturesJSON['textures']['CAPE']['url']);
-                }
-            }
-        }
+        $properties = $this->parseTexturesProperties($response['properties']);
 
         $playerInformation = new PlayerInformation($response['id'], $response['name'], $properties);
 
@@ -237,5 +252,22 @@ class DefaultYggdrasil implements Yggdrasil {
         }
 
         return $playerInformation;
+    }
+
+    function hasJoined($username, $loginHash)
+    {
+        if($username == null)
+            throw new InvalidParameterException('Cannot send hasJoined for a null username');
+        if($loginHash == null)
+            throw new InvalidParameterException('Cannot send hasJoined for a null login hash');
+
+        $response = $this->getSessionServerResponse("hasJoined", [
+            'username' => $username,
+            'serverId' => $loginHash
+        ]);
+
+        $properties = $this->parseTexturesProperties($response['properties']);
+
+        return new HasJoinedResponse($response['id'], $properties);
     }
 }
