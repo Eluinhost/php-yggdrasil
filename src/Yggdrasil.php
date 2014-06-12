@@ -95,7 +95,16 @@ interface Yggdrasil {
      * @returns PlayerInformation the information about the UUID
      * @throws InvalidParameterException if the uuid supplied is null
      * @throws APIRequestException if the server returned errors for the request
-     * @return mixed
+     * @return PlayerInformation
      */
     function getPlayerInfo($uuid);
+
+    /**
+     * Sends a hasJoined to the session server
+     *
+     * @param $username String the client username
+     * @param $loginHash String the login hash generated during encryption
+     * @return mixed
+     */
+    function hasJoined($username, $loginHash);
 } 
