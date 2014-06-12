@@ -27,6 +27,38 @@ class DefaultYggdrasil implements Yggdrasil {
     }
 
     /**
+     * Checks the array for a properties with name 'textures' and creates a PlayerProperties for it
+     *
+     * @param $propertiesArray array the array of properties
+     * @return PlayerProperties the parsed properties or null if textures property not found
+     */
+    private function parseTexturesProperties($propertiesArray)
+    {
+        foreach($propertiesArray as $property) {
+            if($property['name'] == 'textures') {
+                $texturesJSON = json_decode(base64_decode($property['value']), true);
+
+                $properties = new PlayerProperties(
+                    $texturesJSON['timestamp'],
+                    $texturesJSON['profileId'],
+                    $texturesJSON['profileName'],
+                    $texturesJSON['isPublic']
+                );
+
+                if(array_key_exists('SKIN', $texturesJSON['textures'])) {
+                    $properties->setSkinTexture($texturesJSON['textures']['SKIN']['url']);
+                }
+                if(array_key_exists('CAPE', $texturesJSON['textures'])) {
+                    $properties->setCapeTexture($texturesJSON['textures']['CAPE']['url']);
+                }
+
+                return $properties;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Shortcut to getResponse using self::AUTH_SERVER_URL as a base
      *
      * @param $subURL String the url to append to AUTH_SERVER_URL
@@ -207,27 +239,7 @@ class DefaultYggdrasil implements Yggdrasil {
 
         $response = $this->getSessionServerResponse("/profile/$uuid");
 
-        $properties = null;
-
-        foreach($response['properties'] as $property) {
-            if($property['name'] == 'textures') {
-                $texturesJSON = json_decode(base64_decode($property['value']), true);
-
-                $properties = new PlayerProperties(
-                    $texturesJSON['timestamp'],
-                    $texturesJSON['profileId'],
-                    $texturesJSON['profileName'],
-                    $texturesJSON['isPublic']
-                );
-
-                if(array_key_exists('SKIN', $texturesJSON['textures'])) {
-                    $properties->setSkinTexture($texturesJSON['textures']['SKIN']['url']);
-                }
-                if(array_key_exists('CAPE', $texturesJSON['textures'])) {
-                    $properties->setCapeTexture($texturesJSON['textures']['CAPE']['url']);
-                }
-            }
-        }
+        $properties = $this->parseTexturesProperties($response['properties']);
 
         $playerInformation = new PlayerInformation($response['id'], $response['name'], $properties);
 
@@ -253,25 +265,7 @@ class DefaultYggdrasil implements Yggdrasil {
 
         $properties = null;
 
-        foreach($response['properties'] as $property) {
-            if($property['name'] == 'textures') {
-                $texturesJSON = json_decode(base64_decode($property['value']), true);
 
-                $properties = new PlayerProperties(
-                    $texturesJSON['timestamp'],
-                    $texturesJSON['profileId'],
-                    $texturesJSON['profileName'],
-                    $texturesJSON['isPublic']
-                );
-
-                if(array_key_exists('SKIN', $texturesJSON['textures'])) {
-                    $properties->setSkinTexture($texturesJSON['textures']['SKIN']['url']);
-                }
-                if(array_key_exists('CAPE', $texturesJSON['textures'])) {
-                    $properties->setCapeTexture($texturesJSON['textures']['CAPE']['url']);
-                }
-            }
-        }
 
         return new HasJoinedResponse($response['id'], $properties);
     }
