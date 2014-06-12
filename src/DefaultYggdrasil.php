@@ -263,9 +263,7 @@ class DefaultYggdrasil implements Yggdrasil {
 
         $response = $this->getSessionServerResponse("hasJoined");
 
-        $properties = null;
-
-
+        $properties = $this->parseTexturesProperties($response['properties']);
 
         return new HasJoinedResponse($response['id'], $properties);
     }
