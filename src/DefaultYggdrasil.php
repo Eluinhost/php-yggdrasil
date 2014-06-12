@@ -27,16 +27,43 @@ class DefaultYggdrasil implements Yggdrasil {
     }
 
     /**
-     * Get a response from the given subURL via POST with the given JSON data. Sets header Content-Type for JSON
+     * Shortcut to getResponse using self::AUTH_SERVER_URL as a base
      *
-     * @param $subURL String the sub url to add onto AUTH_SERVER_URL
+     * @param $subURL String the url to append to AUTH_SERVER_URL
      * @param $jsonData array the json payload
      * @throws APIRequestException if a non 200 code with the error details from the server
      * @return array json response
      */
-    private function getResponse($subURL, $jsonData) {
+    private function getAuthServerResponse($subURL, $jsonData)
+    {
+        return $this->getResponse(self::AUTH_SERVER_URL . $subURL, $jsonData);
+    }
+
+    /**
+     * Shortcut to getResponse using self::SESSION_SERVER_URL as a base
+     *
+     * @param $subURL String the url to append to SESSION_SERVER_URL
+     * @param $jsonData array the json payload
+     * @throws APIRequestException if a non 200 code with the error details from the server
+     * @return array json response
+     */
+    private function getSessionServerResponse($subURL, $jsonData)
+    {
+        return $this->getResponse(self::SESSION_SERVER . $subURL, $jsonData);
+    }
+
+    /**
+     * Get a response from the given subURL via POST with the given JSON data. Sets header Content-Type for JSON
+     *
+     * @param $url String the full URL to request
+     * @param $jsonData array the json payload
+     * @throws APIRequestException if a non 200 code with the error details from the server
+     * @return array json response
+     */
+    private function getResponse($url, $jsonData)
+    {
         $response =  $this->httpClient->post(
-            self::AUTH_SERVER_URL . $subURL,
+            $url,
             [
                 'json'      => $jsonData,
                 'headers'   => [
@@ -105,7 +132,7 @@ class DefaultYggdrasil implements Yggdrasil {
             $payload['client_token'] = $this->clientToken;
         }
 
-        $response = $this->getResponse('/authenticate', $payload);
+        $response = $this->getAuthServerResponse('/authenticate', $payload);
 
         $this->accessToken = $response['accessToken'];
         $this->clientToken = $response['clientToken'];
@@ -118,7 +145,7 @@ class DefaultYggdrasil implements Yggdrasil {
         if ($this->accessToken == null)
             throw new InvalidParameterException('Access token has not been set, cannot refresh.');
 
-        $response = $this->getResponse('/refresh', [
+        $response = $this->getAuthServerResponse('/refresh', [
             'accessToken' => $this->accessToken,
             'clientToken' => $this->clientToken
         ]);
@@ -132,7 +159,7 @@ class DefaultYggdrasil implements Yggdrasil {
         if($this->accessToken == null)
             throw new InvalidParameterException('Access token has not been set, cannot validate.');
 
-        $this->getResponse('/validate', ['accessToken' => $this->accessToken]);
+        $this->getAuthServerResponse('/validate', ['accessToken' => $this->accessToken]);
     }
 
     function signout($password)
@@ -142,7 +169,7 @@ class DefaultYggdrasil implements Yggdrasil {
         if($password == null)
             throw new InvalidParameterException('Password cannot be null when signout');
 
-        $this->getResponse('/signout', [
+        $this->getAuthServerResponse('/signout', [
             'username' => $this->username,
             'password' => $password
         ]);
@@ -155,7 +182,7 @@ class DefaultYggdrasil implements Yggdrasil {
         if ($this->accessToken == null)
             throw new InvalidParameterException('Access token has not been set, cannot invalidate.');
 
-        $this->getResponse('/invalidate', [
+        $this->getAuthServerResponse('/invalidate', [
             'clientToken' => $this->clientToken,
             'accessToken' => $this->accessToken
         ]);
@@ -166,7 +193,7 @@ class DefaultYggdrasil implements Yggdrasil {
         if ($uuid == null)
             throw new InvalidParameterException('Cannot fetch info for a null uuid');
 
-        $response = $this->getResponse("/$uuid", []);
+        $response = $this->getSessionServerResponse("/$uuid", []);
 
         $properties = null;
 
