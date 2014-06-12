@@ -7,9 +7,11 @@ class PlayerInformation {
     private $id;
     private $name;
     private $properties;
+    private $isLegacy = false;
+    private $isDemo = false;
 
     /**
-     * Create a new PlayerInformation result
+     * Create a new PlayerInformation result. Legacy and Demo are set to false by default, use setIsLegacy and setIsDemo to set them.
      *
      * @param $id String the player UUID
      * @param $name String the player name
@@ -73,6 +75,42 @@ class PlayerInformation {
     public function setId($id)
     {
         $this->id = $id;
+        return $this;
+    }
+
+    /**
+     * @return bool true if legacy account
+     */
+    public function isLegacy()
+    {
+        return $this->isLegacy;
+    }
+
+    /**
+     * @param $legacy bool true if legacy account, false otherwise
+     * @return $this
+     */
+    public function setIsLegacy($legacy)
+    {
+        $this->isLegacy = $legacy;
+        return $this;
+    }
+
+    /**
+     * @return boolean true if demo account
+     */
+    public function getIsDemo()
+    {
+        return $this->isDemo;
+    }
+
+    /**
+     * @param boolean $isDemo true if demo account, false otherwise
+     * @return $this;
+     */
+    public function setIsDemo($isDemo)
+    {
+        $this->isDemo = $isDemo;
         return $this;
     }
 
