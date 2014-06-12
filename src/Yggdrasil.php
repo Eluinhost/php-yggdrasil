@@ -92,6 +92,9 @@ interface Yggdrasil {
      * Fetches information for the player
      *
      * @param $uuid String the player's UUID
+     * @returns PlayerInformation the information about the UUID
+     * @throws InvalidParameterException if the uuid supplied is null
+     * @throws APIRequestException if the server returned errors for the request
      * @return mixed
      */
     function getPlayerInfo($uuid);

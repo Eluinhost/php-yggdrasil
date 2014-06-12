@@ -7,6 +7,7 @@ use GuzzleHttp\Client;
 class DefaultYggdrasil implements Yggdrasil {
 
     const AUTH_SERVER_URL = 'https://authserver.mojang.com';
+    const SESSION_SERVER = 'https://sessionserver.mojang.com/session/minecraft/profile';
 
     private $username;
     private $clientToken;
@@ -158,5 +159,43 @@ class DefaultYggdrasil implements Yggdrasil {
             'clientToken' => $this->clientToken,
             'accessToken' => $this->accessToken
         ]);
+    }
+
+    function getPlayerInfo($uuid)
+    {
+        if ($uuid == null)
+            throw new InvalidParameterException('Cannot fetch info for a null uuid');
+
+        $response = $this->getResponse("/$uuid", []);
+
+        $properties = null;
+
+        foreach($response['properties'] as $property) {
+            if($property['name'] == 'textures') {
+                $texturesJSON = base64_decode($property['value']);
+                $properties = new PlayerProperties(
+                    $texturesJSON['timestamp'],
+                    $texturesJSON['profileId'],
+                    $texturesJSON['profileName'],
+                    $texturesJSON['isPublic'],
+                    $texturesJSON['textures']['SKIN']['url']
+                );
+                if($texturesJSON['textures']['CAPE'] != null) {
+                    $properties->setCapeTexture($texturesJSON['textures']['CAPE']['url']);
+                }
+            }
+        }
+
+        $playerInformation = new PlayerInformation($response['id'], $response['name'], $properties);
+
+        if($response['legacy'] != null) {
+            $playerInformation->setIsLegacy($response['legacy']);
+        }
+
+        if($response['demo'] != null) {
+            $playerInformation->setIsDemo($response['demo']);
+        }
+
+        return $playerInformation;
     }
 }
