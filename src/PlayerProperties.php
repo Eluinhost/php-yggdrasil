@@ -17,10 +17,10 @@ class PlayerProperties {
      * @param $profileID String player UUID
      * @param $profileName String player name
      * @param $public boolean ?
-     * @param $skinTexture String skin texture URL
+     * @param $skinTexture null|String skin texture URL, default null for no skin
      * @param $capeTexture null|String cape texture URL, default null for no cape
      */
-    public function __construct($timestamp, $profileID, $profileName, $public, $skinTexture, $capeTexture = null)
+    public function __construct($timestamp, $profileID, $profileName, $public, $skinTexture = null, $capeTexture = null)
     {
         $this->timestamp = $timestamp;
         $this->profileID = $profileID;
@@ -142,5 +142,13 @@ class PlayerProperties {
     public function hasCape()
     {
         return $this->capeTexture != null;
+    }
+
+    /**
+     * @return bool whether there is a skin URL set or not
+     */
+    public function hasSkin()
+    {
+        return $this->skinTexture != null;
     }
 } 
