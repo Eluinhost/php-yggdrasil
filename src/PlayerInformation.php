@@ -99,7 +99,7 @@ class PlayerInformation {
     /**
      * @return boolean true if demo account
      */
-    public function getIsDemo()
+    public function isDemo()
     {
         return $this->isDemo;
     }
