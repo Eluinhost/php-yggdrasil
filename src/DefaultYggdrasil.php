@@ -7,6 +7,7 @@ use GuzzleHttp\Client;
 class DefaultYggdrasil implements Yggdrasil {
 
     const AUTH_SERVER_URL = 'https://authserver.mojang.com';
+    const SESSION_SERVER = 'https://sessionserver.mojang.com/session/minecraft/profile';
 
     private $username;
     private $clientToken;
@@ -26,23 +27,59 @@ class DefaultYggdrasil implements Yggdrasil {
     }
 
     /**
-     * Get a response from the given subURL via POST with the given JSON data. Sets header Content-Type for JSON
+     * Shortcut to getResponse using self::AUTH_SERVER_URL as a base
      *
-     * @param $subURL String the sub url to add onto AUTH_SERVER_URL
+     * @param $subURL String the url to append to AUTH_SERVER_URL
      * @param $jsonData array the json payload
      * @throws APIRequestException if a non 200 code with the error details from the server
      * @return array json response
      */
-    private function getResponse($subURL, $jsonData) {
-        $response =  $this->httpClient->post(
+    private function getAuthServerResponse($subURL, $jsonData)
+    {
+        return $this->getResponse(
             self::AUTH_SERVER_URL . $subURL,
             [
-                'json'      => $jsonData,
-                'headers'   => [
+                'json' => $jsonData,
+                'headers' => [
                     'Content-Type' => 'application/json'
                 ]
-            ]
+            ],
+            true
         );
+    }
+
+    /**
+     * Shortcut to getResponse using self::SESSION_SERVER_URL as a base
+     *
+     * @param $subURL String the url to append to SESSION_SERVER_URL
+     * @throws APIRequestException if a non 200 code with the error details from the server
+     * @return array json response
+     */
+    private function getSessionServerResponse($subURL)
+    {
+        return $this->getResponse(
+            self::SESSION_SERVER . $subURL,
+            [],
+            false
+        );
+    }
+
+    /**
+     * Get a response from the given subURL via POST with the given JSON data. Sets header Content-Type for JSON
+     *
+     * @param $url String the full URL to request
+     * @param $options array the options to set on the request
+     * @param $post boolean if true uses POST, otherwise uses GET
+     * @throws APIRequestException if a non 200 code with the error details from the server
+     * @return array json response
+     */
+    private function getResponse($url, $options, $post)
+    {
+        if($post) {
+            $response = $this->httpClient->post($url, $options);
+        } else {
+            $response = $this->httpClient->get($url, $options);
+        }
         if( $response->getStatusCode() != 200 ) {
             $json = $response->json();
             $short = $json['error'];
@@ -104,7 +141,7 @@ class DefaultYggdrasil implements Yggdrasil {
             $payload['client_token'] = $this->clientToken;
         }
 
-        $response = $this->getResponse('/authenticate', $payload);
+        $response = $this->getAuthServerResponse('/authenticate', $payload);
 
         $this->accessToken = $response['accessToken'];
         $this->clientToken = $response['clientToken'];
@@ -117,7 +154,7 @@ class DefaultYggdrasil implements Yggdrasil {
         if ($this->accessToken == null)
             throw new InvalidParameterException('Access token has not been set, cannot refresh.');
 
-        $response = $this->getResponse('/refresh', [
+        $response = $this->getAuthServerResponse('/refresh', [
             'accessToken' => $this->accessToken,
             'clientToken' => $this->clientToken
         ]);
@@ -131,7 +168,7 @@ class DefaultYggdrasil implements Yggdrasil {
         if($this->accessToken == null)
             throw new InvalidParameterException('Access token has not been set, cannot validate.');
 
-        $this->getResponse('/validate', ['accessToken' => $this->accessToken]);
+        $this->getAuthServerResponse('/validate', ['accessToken' => $this->accessToken]);
     }
 
     function signout($password)
@@ -141,7 +178,7 @@ class DefaultYggdrasil implements Yggdrasil {
         if($password == null)
             throw new InvalidParameterException('Password cannot be null when signout');
 
-        $this->getResponse('/signout', [
+        $this->getAuthServerResponse('/signout', [
             'username' => $this->username,
             'password' => $password
         ]);
@@ -154,9 +191,51 @@ class DefaultYggdrasil implements Yggdrasil {
         if ($this->accessToken == null)
             throw new InvalidParameterException('Access token has not been set, cannot invalidate.');
 
-        $this->getResponse('/invalidate', [
+        $this->getAuthServerResponse('/invalidate', [
             'clientToken' => $this->clientToken,
             'accessToken' => $this->accessToken
         ]);
+    }
+
+    function getPlayerInfo($uuid)
+    {
+        if ($uuid == null)
+            throw new InvalidParameterException('Cannot fetch info for a null uuid');
+
+        $response = $this->getSessionServerResponse("/$uuid");
+
+        $properties = null;
+
+        foreach($response['properties'] as $property) {
+            if($property['name'] == 'textures') {
+                $texturesJSON = json_decode(base64_decode($property['value']), true);
+
+                $properties = new PlayerProperties(
+                    $texturesJSON['timestamp'],
+                    $texturesJSON['profileId'],
+                    $texturesJSON['profileName'],
+                    $texturesJSON['isPublic']
+                );
+
+                if(array_key_exists('SKIN', $texturesJSON['textures'])) {
+                    $properties->setSkinTexture($texturesJSON['textures']['SKIN']['url']);
+                }
+                if(array_key_exists('CAPE', $texturesJSON['textures'])) {
+                    $properties->setCapeTexture($texturesJSON['textures']['CAPE']['url']);
+                }
+            }
+        }
+
+        $playerInformation = new PlayerInformation($response['id'], $response['name'], $properties);
+
+        if(array_key_exists('legacy', $response)) {
+            $playerInformation->setIsLegacy($response['legacy']);
+        }
+
+        if(array_key_exists('demo', $response)) {
+            $playerInformation->setIsDemo($response['demo']);
+        }
+
+        return $playerInformation;
     }
 }
