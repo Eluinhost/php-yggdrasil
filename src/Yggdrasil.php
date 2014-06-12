@@ -106,7 +106,7 @@ interface Yggdrasil {
      * @param $loginHash String the login hash generated during encryption
      * @throws InvalidParameterException if the username/loginhash supplied is null
      * @throws APIRequestException if the server returned errors for the request
-     * @return mixed
+     * @return HasJoinedResponse
      */
     function hasJoined($username, $loginHash);
 } 
