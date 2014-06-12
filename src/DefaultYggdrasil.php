@@ -217,11 +217,11 @@ class DefaultYggdrasil implements Yggdrasil {
                     $texturesJSON['isPublic']
                 );
 
-                if(array_key_exists('skin', $texturesJSON['textures'])) {
-                    $properties->setSkinTexture($texturesJSON['textures']['skin']['url']);
+                if(array_key_exists('SKIN', $texturesJSON['textures'])) {
+                    $properties->setSkinTexture($texturesJSON['textures']['SKIN']['url']);
                 }
-                if(array_key_exists('cape', $texturesJSON['textures'])) {
-                    $properties->setCapeTexture($texturesJSON['textures']['cape']['url']);
+                if(array_key_exists('CAPE', $texturesJSON['textures'])) {
+                    $properties->setCapeTexture($texturesJSON['textures']['CAPE']['url']);
                 }
             }
         }
