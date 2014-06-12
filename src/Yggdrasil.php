@@ -87,4 +87,12 @@ interface Yggdrasil {
      * @throws APIRequestException if the server returned errors for the request
      */
     function invalidate();
+
+    /**
+     * Fetches information for the player
+     *
+     * @param $uuid String the player's UUID
+     * @return mixed
+     */
+    function getPlayerInfo($uuid);
 } 
