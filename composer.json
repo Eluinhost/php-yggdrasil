@@ -1,6 +1,7 @@
 {
     "name": "publicuhc/php-yggdrasil",
     "description": "PHP Library for interacting with Mojang authentication servers",
+    "keywords": ["Mojang", "Auth Server", "minecraft", "authentication", "yggdrasil", "auth"],
     "minimum-stability": "stable",
     "license": "GPLv3",
     "authors": [
