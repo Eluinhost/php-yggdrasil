@@ -261,7 +261,7 @@ class DefaultYggdrasil implements Yggdrasil {
         if($loginHash == null)
             throw new InvalidParameterException('Cannot send hasJoined for a null login hash');
 
-        $response = $this->getSessionServerResponse("hasJoined", [
+        $response = $this->getSessionServerResponse("/hasJoined", [
             'username' => $username,
             'serverId' => $loginHash
         ]);
