@@ -34,7 +34,7 @@ class PlayerInformation {
 
     /**
      * @param PlayerProperties $properties the properties of the player information
-     * @return $this;
+     * @return PlayerInformation
      */
     public function setProperties($properties)
     {
@@ -52,7 +52,7 @@ class PlayerInformation {
 
     /**
      * @param String $name the player name
-     * @return $this;
+     * @return PlayerInformation
      */
     public function setName($name)
     {
@@ -70,7 +70,7 @@ class PlayerInformation {
 
     /**
      * @param String $id the player UUID
-     * @return $this;
+     * @return PlayerInformation
      */
     public function setId($id)
     {
@@ -88,7 +88,7 @@ class PlayerInformation {
 
     /**
      * @param $legacy bool true if legacy account, false otherwise
-     * @return $this
+     * @return PlayerInformation
      */
     public function setIsLegacy($legacy)
     {
@@ -106,7 +106,7 @@ class PlayerInformation {
 
     /**
      * @param boolean $isDemo true if demo account, false otherwise
-     * @return $this;
+     * @return PlayerInformation
      */
     public function setIsDemo($isDemo)
     {

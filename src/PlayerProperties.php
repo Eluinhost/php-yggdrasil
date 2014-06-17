@@ -40,7 +40,7 @@ class PlayerProperties {
 
     /**
      * @param $timestamp int timestamp to set to
-     * @return $this
+     * @return PlayerProperties
      */
     public function setTimestamp($timestamp)
     {
@@ -58,7 +58,7 @@ class PlayerProperties {
 
     /**
      * @param $profileID String the player UUID
-     * @return $this
+     * @return PlayerProperties
      */
     public function setProfileID($profileID)
     {
@@ -76,7 +76,7 @@ class PlayerProperties {
 
     /**
      * @param String $profileName the player name
-     * @return $this
+     * @return PlayerProperties
      */
     public function setProfileName($profileName)
     {
@@ -112,7 +112,7 @@ class PlayerProperties {
 
     /**
      * @param String $skinTexture the URL of the skin texture
-     * @return $this;
+     * @return PlayerProperties
      */
     public function setSkinTexture($skinTexture)
     {
@@ -130,10 +130,12 @@ class PlayerProperties {
 
     /**
      * @param null|String $capeTexture the URL of the cape texture or null if none set
+     * @return PlayerProperties
      */
     public function setCapeTexture($capeTexture)
     {
         $this->capeTexture = $capeTexture;
+        return $this;
     }
 
     /**

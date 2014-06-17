@@ -28,7 +28,7 @@ class HasJoinedResponse {
 
     /**
      * @param String $uuid the UUID of the user
-     * @return $this;
+     * @return HasJoinedResponse
      */
     public function setUuid($uuid)
     {
@@ -46,7 +46,7 @@ class HasJoinedResponse {
 
     /**
      * @param PlayerProperties $properties associated properties
-     * @return $this
+     * @return HasJoinedResponse
      */
     public function setProperties($properties)
     {
