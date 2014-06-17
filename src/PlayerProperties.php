@@ -20,7 +20,7 @@ class PlayerProperties {
      * @param $skinTexture null|String skin texture URL, default null for no skin
      * @param $capeTexture null|String cape texture URL, default null for no cape
      */
-    public function __construct($timestamp, $profileID, $profileName, $public, $skinTexture = null, $capeTexture = null)
+    public function __construct($timestamp, $profileID, $profileName, $public = null, $skinTexture = null, $capeTexture = null)
     {
         $this->timestamp = $timestamp;
         $this->profileID = $profileID;
@@ -85,7 +85,7 @@ class PlayerProperties {
     }
 
     /**
-     * @return boolean ?
+     * @return boolean the values of isPublic or null of not set
      */
     public function getPublic()
     {
@@ -93,8 +93,8 @@ class PlayerProperties {
     }
 
     /**
-     * @param boolean $public ?
-     * @return $this;
+     * @param boolean $public the value if isPublic or null if not set
+     * @return PlayerProperties
      */
     public function setPublic($public)
     {

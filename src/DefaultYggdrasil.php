@@ -41,9 +41,12 @@ class DefaultYggdrasil implements Yggdrasil {
                 $properties = new PlayerProperties(
                     $texturesJSON['timestamp'],
                     $texturesJSON['profileId'],
-                    $texturesJSON['profileName'],
-                    $texturesJSON['isPublic']
+                    $texturesJSON['profileName']
                 );
+
+                if(isset($texturesJSON['isPublic'])) {
+                    $properties->setPublic($texturesJSON['isPublic']);
+                }
 
                 if(array_key_exists('SKIN', $texturesJSON['textures'])) {
                     $properties->setSkinTexture($texturesJSON['textures']['SKIN']['url']);
