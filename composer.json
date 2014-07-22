@@ -3,7 +3,7 @@
     "description": "PHP Library for interacting with Mojang authentication servers",
     "keywords": ["Mojang", "Auth Server", "minecraft", "authentication", "yggdrasil", "auth"],
     "minimum-stability": "stable",
-    "license": "GPLv3",
+    "license": "GPL-3.0+",
     "authors": [
         {
             "name": "Graham Howden",
@@ -11,7 +11,7 @@
         }
     ],
     "require": {
-        "guzzlehttp/guzzle": "4.*"
+        "guzzlehttp/guzzle": "~4.0"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*"
