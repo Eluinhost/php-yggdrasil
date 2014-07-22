@@ -1,6 +1,8 @@
 php-yggdrasil
 =============
 
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/f6b72a49-286e-46c6-82bf-6df31424d6cb/small.png)](https://insight.sensiolabs.com/projects/f6b72a49-286e-46c6-82bf-6df31424d6cb)
+
 PHP Library for interacting with Mojang authentication servers.
 
 Installation
