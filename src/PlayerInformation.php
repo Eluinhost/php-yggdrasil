@@ -90,7 +90,7 @@ class PlayerInformation {
      * @param $legacy bool true if legacy account, false otherwise
      * @return PlayerInformation
      */
-    public function setIsLegacy($legacy)
+    public function setLegacy($legacy)
     {
         $this->isLegacy = $legacy;
         return $this;
@@ -108,7 +108,7 @@ class PlayerInformation {
      * @param boolean $isDemo true if demo account, false otherwise
      * @return PlayerInformation
      */
-    public function setIsDemo($isDemo)
+    public function setDemo($isDemo)
     {
         $this->isDemo = $isDemo;
         return $this;
