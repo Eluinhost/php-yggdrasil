@@ -1,7 +1,6 @@
 <?php
 namespace PublicUHC\PhpYggdrasil;
 
-
 use GuzzleHttp\Client;
 
 class DefaultYggdrasil implements Yggdrasil {
@@ -10,9 +9,14 @@ class DefaultYggdrasil implements Yggdrasil {
     const SESSION_SERVER = 'https://sessionserver.mojang.com/session/minecraft';
 
     private $username;
+    private $httpClient;
+
+    //these properties will be filled after a sucessfull response
     private $clientToken;
     private $accessToken;
-    private $httpClient;
+    private $uuid;
+    private $playerName;
+    private $legacy;
 
     /**
      * Create a new Yggdrasil for querying mojang servers
@@ -154,6 +158,21 @@ class DefaultYggdrasil implements Yggdrasil {
         return $this;
     }
 
+    function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    function getPlayerName()
+    {
+        return $this->playerName;
+    }
+
+    function getLegacy()
+    {
+        return $this->legacy;
+    }
+
     function getUsername()
     {
         return $this->username;
@@ -183,6 +202,12 @@ class DefaultYggdrasil implements Yggdrasil {
 
         $this->accessToken = $response['accessToken'];
         $this->clientToken = $response['clientToken'];
+
+        $profile = $response['selectedProfile'];
+        $this->uuid = $profile['id'];
+        $this->playerName = $profile['name'];
+        //only appears if true
+        $this->legacy = isset($profile['legacy']);
     }
 
     function refresh()
@@ -199,6 +224,12 @@ class DefaultYggdrasil implements Yggdrasil {
 
         $this->accessToken = $response['accessToken'];
         $this->clientToken = $response['clientToken'];
+
+        $profile = $response['selectedProfile'];
+        $this->uuid = $profile['id'];
+        $this->playerName = $profile['name'];
+        //only appears if true
+        $this->legacy = isset($profile['legacy']);
     }
 
     function validate()
