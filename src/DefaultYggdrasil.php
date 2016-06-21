@@ -27,6 +27,10 @@ class DefaultYggdrasil implements Yggdrasil {
      */
     public function __construct($username = null, $clientToken = null, $accessToken = null)
     {
+        $this->username = $username;
+        $this->clientToken = $clientToken;
+        $this->accessToken = $accessToken;
+
         $this->httpClient = new Client();
     }
 
