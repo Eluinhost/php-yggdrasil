@@ -14,9 +14,7 @@ class DefaultYggdrasil implements Yggdrasil {
     //these properties will be filled after a sucessfull response
     private $clientToken;
     private $accessToken;
-    private $uuid;
-    private $playerName;
-    private $legacy;
+    private $selectedProfile;
 
     /**
      * Create a new Yggdrasil for querying mojang servers
@@ -162,24 +160,14 @@ class DefaultYggdrasil implements Yggdrasil {
         return $this;
     }
 
-    function getUuid()
-    {
-        return $this->uuid;
-    }
-
-    function getPlayerName()
-    {
-        return $this->playerName;
-    }
-
-    function getLegacy()
-    {
-        return $this->legacy;
-    }
-
     function getUsername()
     {
         return $this->username;
+    }
+
+    public function getSelectedProfile()
+    {
+        return $this->selectedProfile;
     }
 
     function authenticate($password, $agent = 'Minecraft')
@@ -207,11 +195,12 @@ class DefaultYggdrasil implements Yggdrasil {
         $this->accessToken = $response['accessToken'];
         $this->clientToken = $response['clientToken'];
 
-        $profile = $response['selectedProfile'];
-        $this->uuid = $profile['id'];
-        $this->playerName = $profile['name'];
+        $selectedResponse = $response['selectedProfile'];
+        $uuid = $selectedResponse['id'];
+        $playerName = $selectedResponse['name'];
         //only appears if true
-        $this->legacy = isset($profile['legacy']);
+        $legacy = isset($selectedResponse['legacy']);
+        $this->selectedProfile = new Profile($uuid, $playerName, $legacy);
     }
 
     function refresh()
@@ -229,11 +218,12 @@ class DefaultYggdrasil implements Yggdrasil {
         $this->accessToken = $response['accessToken'];
         $this->clientToken = $response['clientToken'];
 
-        $profile = $response['selectedProfile'];
-        $this->uuid = $profile['id'];
-        $this->playerName = $profile['name'];
+        $selectedResponse = $response['selectedProfile'];
+        $uuid = $selectedResponse['id'];
+        $playerName = $selectedResponse['name'];
         //only appears if true
-        $this->legacy = isset($profile['legacy']);
+        $legacy = isset($selectedResponse['legacy']);
+        $this->selectedProfile = new Profile($uuid, $playerName, $legacy);
     }
 
     function validate()

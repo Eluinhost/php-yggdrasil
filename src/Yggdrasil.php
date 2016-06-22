@@ -31,6 +31,13 @@ interface Yggdrasil {
     function getUsername();
 
     /**
+     * If the authentication was succesful and the user has ONE minecraft license, this contains the minecraft account.
+     *
+     * @return null|Profile the available minecraft
+     */
+    function getSelectedProfile();
+
+    /**
      * Gets an access token from the server, can be fetched with getAccessToken.
      *
      * <p>If clientToken is set it will be passed along with the authenticate function</p>
@@ -109,4 +116,4 @@ interface Yggdrasil {
      * @return HasJoinedResponse
      */
     function hasJoined($username, $loginHash);
-} 
+}
