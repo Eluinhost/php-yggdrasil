@@ -1,7 +1,6 @@
 <?php
 namespace PublicUHC\PhpYggdrasil;
 
-
 use GuzzleHttp\Client;
 
 class DefaultYggdrasil implements Yggdrasil {
@@ -10,9 +9,12 @@ class DefaultYggdrasil implements Yggdrasil {
     const SESSION_SERVER = 'https://sessionserver.mojang.com/session/minecraft';
 
     private $username;
+    private $httpClient;
+
+    //these properties will be filled after a sucessfull response
     private $clientToken;
     private $accessToken;
-    private $httpClient;
+    private $selectedProfile;
 
     /**
      * Create a new Yggdrasil for querying mojang servers
@@ -23,6 +25,10 @@ class DefaultYggdrasil implements Yggdrasil {
      */
     public function __construct($username = null, $clientToken = null, $accessToken = null)
     {
+        $this->username = $username;
+        $this->clientToken = $clientToken;
+        $this->accessToken = $accessToken;
+
         $this->httpClient = new Client();
     }
 
@@ -159,6 +165,11 @@ class DefaultYggdrasil implements Yggdrasil {
         return $this->username;
     }
 
+    public function getSelectedProfile()
+    {
+        return $this->selectedProfile;
+    }
+
     function authenticate($password, $agent = 'Minecraft')
     {
         if($this->username == null)
@@ -183,6 +194,18 @@ class DefaultYggdrasil implements Yggdrasil {
 
         $this->accessToken = $response['accessToken'];
         $this->clientToken = $response['clientToken'];
+
+        if (isset($response['selectedProfile'])) {
+            $selectedResponse = $response['selectedProfile'];
+
+            $uuid = $selectedResponse['id'];
+            $playerName = $selectedResponse['name'];
+            //only appears if true
+            $legacy = isset($selectedResponse['legacy']);
+            $this->selectedProfile = new Profile($uuid, $playerName, $legacy);
+        } else {
+            $this->selectedProfile = null;
+        }
     }
 
     function refresh()
@@ -199,6 +222,18 @@ class DefaultYggdrasil implements Yggdrasil {
 
         $this->accessToken = $response['accessToken'];
         $this->clientToken = $response['clientToken'];
+
+        if (isset($response['selectedProfile'])) {
+            $selectedResponse = $response['selectedProfile'];
+
+            $uuid = $selectedResponse['id'];
+            $playerName = $selectedResponse['name'];
+            //only appears if true
+            $legacy = isset($selectedResponse['legacy']);
+            $this->selectedProfile = new Profile($uuid, $playerName, $legacy);
+        } else {
+            $this->selectedProfile = null;
+        }
     }
 
     function validate()
