@@ -195,12 +195,17 @@ class DefaultYggdrasil implements Yggdrasil {
         $this->accessToken = $response['accessToken'];
         $this->clientToken = $response['clientToken'];
 
-        $selectedResponse = $response['selectedProfile'];
-        $uuid = $selectedResponse['id'];
-        $playerName = $selectedResponse['name'];
-        //only appears if true
-        $legacy = isset($selectedResponse['legacy']);
-        $this->selectedProfile = new Profile($uuid, $playerName, $legacy);
+        if (isset($response['selectedProfile'])) {
+            $selectedResponse = $response['selectedProfile'];
+
+            $uuid = $selectedResponse['id'];
+            $playerName = $selectedResponse['name'];
+            //only appears if true
+            $legacy = isset($selectedResponse['legacy']);
+            $this->selectedProfile = new Profile($uuid, $playerName, $legacy);
+        } else {
+            $this->selectedProfile = null;
+        }
     }
 
     function refresh()
@@ -218,12 +223,17 @@ class DefaultYggdrasil implements Yggdrasil {
         $this->accessToken = $response['accessToken'];
         $this->clientToken = $response['clientToken'];
 
-        $selectedResponse = $response['selectedProfile'];
-        $uuid = $selectedResponse['id'];
-        $playerName = $selectedResponse['name'];
-        //only appears if true
-        $legacy = isset($selectedResponse['legacy']);
-        $this->selectedProfile = new Profile($uuid, $playerName, $legacy);
+        if (isset($response['selectedProfile'])) {
+            $selectedResponse = $response['selectedProfile'];
+
+            $uuid = $selectedResponse['id'];
+            $playerName = $selectedResponse['name'];
+            //only appears if true
+            $legacy = isset($selectedResponse['legacy']);
+            $this->selectedProfile = new Profile($uuid, $playerName, $legacy);
+        } else {
+            $this->selectedProfile = null;
+        }
     }
 
     function validate()
